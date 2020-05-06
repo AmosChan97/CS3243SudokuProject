@@ -276,6 +276,7 @@ class NewExtractor(FeatureExtractor):
             for g, s in zip(ghosts, ghostStates):
                 if nextPos == g and s.scaredTimer > 0:
                     features["eat-scared-ghost"] = 1.0
+            features["closest-food"] = 0
             features["closest-capsule"] = 0
 
         features["#-of-ghosts-1-step-away"] = 0
@@ -285,9 +286,9 @@ class NewExtractor(FeatureExtractor):
         for g, s in zip(ghosts, ghostStates):
             if nextPos == g and s.scaredTimer == 0:
                 features["die-to-ghost"] = 1.0
-        if (features["#-of-ghosts-1-step-away"] | features["die-to-ghost"]):
-            features["eats-food"] = 1.0
-            features["eat-scared-ghost"] = 1.0
+        survivalMode = features["#-of-ghosts-1-step-away"] or features["die-to-ghost"]
+        if survivalMode:
+            features["eats-food"] = 0
 
 
         features.divideAll(10.0)
